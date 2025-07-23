@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>POP the corn!</title>
   <style>
-    /* Nhúng font pixel tiếng Việt */
+    /* Nhúng font Arcade Classic hỗ trợ tiếng Việt */
     @font-face {
-      font-family: 'VN-Pixel';
-      src: url('assets/font/Pixel Sans Serif.ttf') format('truetype');
+      font-family: 'ArcadeClassic';
+      src: url('assets/font/ARCADECLASSIC.TTF') format('truetype');
       font-weight: normal;
       font-style: normal;
     }
@@ -19,7 +19,7 @@
     input,
     textarea,
     #thankyou {
-      font-family: 'VN-Pixel', monospace;
+      font-family: 'ArcadeClassic', monospace;
     }
 
     body {
@@ -181,7 +181,7 @@
       <img src="assets/images/corn.png" style="width:120px;height:120px;">
     </div>
     <button id="cookBtn" class="pixel-button" onclick="startCountdown()">COOK</button>
-    <button id="againBtn" class="pixel-button" style="display:none;" onclick="reset()">AGAIN</button>
+    <button id="againBtn" class="pixel-button" onclick="location.reload()" style="display:none;">AGAIN</button>
     <div class="frame">
       <input type="text" id="nameInput" placeholder="Your name (optional)">
       <textarea id="wishInput" placeholder="Write your wish..."></textarea>
@@ -219,6 +219,7 @@
           const audio = document.getElementById('crowAudio');
           audio.currentTime = 0;
           audio.play();
+          setTimeout(() => audio.pause(), 4000);
           crow.remove();
           crowCount++;
           if (crowCount === 10) setTimeout(spawnCrows,1000);
@@ -250,22 +251,8 @@
       emojiBox.classList.add("active");
       for (let i=0; i<200; i++) createPopcornGIF(emojiBox);
       if (wish) fetch("https://formspree.io/f/mwpqlnln",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name,wish})})
-        .then(r=>r.json()).then(()=>thankyou.style.display="block").catch(e=>console.error(e));
+        .then(r=>r.json()).then(() => thankyou.style.display = "block").catch(e=>console.error(e));
       document.getElementById("againBtn").style.display = "inline-block";
-    }
-
-    function reset() {
-      const emojiBox = document.getElementById("emojiBox");
-      emojiBox.innerHTML = `<img src="assets/images/corn.png" style="width:120px;height:120px;">`;
-      emojiBox.classList.remove("active");
-      const btn = document.getElementById("cookBtn");
-      btn.textContent = "COOK";
-      btn.disabled = false;
-      document.getElementById("againBtn").style.display = "none";
-      document.getElementById("thankyou").style.display = "none";
-      document.getElementById("wishInput").value = "";
-      document.getElementById("nameInput").value = "";
-      spawnCrows();
     }
 
     function createPopcornGIF(origin) {
@@ -282,7 +269,7 @@
       gif.style.setProperty('--y',`${y}px`);
       gif.style.setProperty('--r',r);
       document.body.appendChild(gif);
-      setTimeout(()=>gif.remove(),2000);
+      setTimeout(() => gif.remove(),2000);
     }
   </script>
 </body>
