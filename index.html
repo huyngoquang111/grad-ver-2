@@ -152,7 +152,7 @@
       }
 
       if (wishText.trim() !== "") {
-        fetch("YOUR_GOOGLE_APPS_SCRIPT_URL_HERE", {
+        fetch("https://script.google.com/macros/s/AKfycbzVOQZpqVRr98mjT-woVl0mpszp1jdIHbdJAppkwnQftgKxuEFb9J8vv7n07pcpLw0W/exec", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ wish: wishText })
