@@ -115,6 +115,7 @@
     <div class="progress-container"><div id="progressBar"></div></div>
     <button id="collectBtn" class="pixel-button" disabled>COLLECT</button>
     <button id="cookBtn" class="pixel-button" style="display:none;">COOK</button>
+    <button id="reloadBtn" class="pixel-button" onclick="location.reload()">RELOAD</button>
     <div class="frame">
       <input type="text" id="nameInput" placeholder="Your name (required)">
       <textarea id="wishInput" placeholder="Write your wish (required)..."></textarea>
@@ -198,7 +199,7 @@
       emojiBox.classList.add('active');
       const count = isMobile ? 50 : 200;
       for (let i = 0; i < count; i++) createPopcornGIF(emojiBox);
-      document.getElementById('againBtn').style.display = 'inline-block';
+      document.getElementById('reloadBtn').style.display = 'inline-block';
     }
     function createPopcornGIF(origin) {
       const gif = document.createElement('img'); gif.className = 'popcorn-gif'; gif.src = 'assets/images/popcorn tiny.png';
