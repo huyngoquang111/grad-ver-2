@@ -15,15 +15,34 @@
       height: 100vh;
       overflow: hidden;
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       align-items: center;
       justify-content: center;
       color: #fff;
       text-shadow: 1px 1px 2px #000;
     }
 
+    .info-box {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      width: 280px;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 14px;
+      border: 3px solid #fff176;
+      border-radius: 10px;
+      font-size: 8px;
+      line-height: 1.8;
+    }
+
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
     h1 {
-      font-size: 20px;
+      font-size: 18px;
       animation: blink 1s infinite;
       margin-bottom: 12px;
     }
@@ -56,11 +75,14 @@
     .frame {
       background: rgba(0, 0, 0, 0.6);
       border: 3px dashed #fff176;
-      padding: 16px;
-      margin-top: 16px;
+      padding: 14px;
+      margin-top: 14px;
       width: 260px;
       border-radius: 10px;
       box-shadow: 0 0 10px #00000088;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     textarea, input {
@@ -116,20 +138,45 @@
   </style>
 </head>
 <body>
+  <div class="info-box">
+    <p>🌽 <strong>Farm owner:</strong> Ngô Quang Huy</p>
+    <p>⏳ <strong>Harvest time:</strong> <span id="countdown">Loading...</span></p>
+    <p>🧑‍🌾 Need your help to collect the crops with me, hope we earn a lot from this!</p>
+  </div>
 
-  <h1>POP THE CORN!</h1>
-  <div id="emojiBox">🌽</div>
+  <div class="main-content">
+    <h1>POP THE CORN!</h1>
+    <div id="emojiBox">🌽</div>
 
-  <button id="cookBtn" class="pixel-button" onclick="startCountdown()">COOK</button>
-  <button id="againBtn" class="pixel-button" style="display:none;" onclick="reset()">AGAIN</button>
+    <button id="cookBtn" class="pixel-button" onclick="startCountdown()">COOK</button>
+    <button id="againBtn" class="pixel-button" style="display:none;" onclick="reset()">AGAIN</button>
 
-  <div class="frame">
-    <input type="text" id="nameInput" placeholder="Your name (optional)">
-    <textarea id="wishInput" placeholder="Write your wish..."></textarea>
-    <p id="thankyou">THANK YOU SO MUCHHH!</p>
+    <div class="frame">
+      <input type="text" id="nameInput" placeholder="Your name (optional)">
+      <textarea id="wishInput" placeholder="Write your wish..."></textarea>
+      <p id="thankyou">THANK YOU SO MUCHHH!</p>
+    </div>
   </div>
 
   <script>
+    // Countdown to 14/09/2025
+    function updateCountdown() {
+      const target = new Date("2025-09-14T00:00:00");
+      const now = new Date();
+      const diff = target - now;
+
+      if (diff > 0) {
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        document.getElementById("countdown").textContent = `${days} days ${hours} hours`;
+      } else {
+        document.getElementById("countdown").textContent = "It's harvest time!";
+      }
+    }
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+
     let transformed = false;
 
     function startCountdown() {
