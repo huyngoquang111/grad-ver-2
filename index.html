@@ -2,11 +2,27 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>POP the corn!</title>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
+    /* Nhúng font pixel tiếng Việt */
+    @font-face {
+      font-family: 'VN-Pixel';
+      src: url('assets/font/Pixel Sans Serif.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    /* Áp dụng font cho toàn bộ */
+    body,
+    .pixel-button,
+    input,
+    textarea,
+    #thankyou {
+      font-family: 'VN-Pixel', monospace;
+    }
+
     body {
-      font-family: 'Press Start 2P', cursive;
       background-image: url('assets/images/ChatGPT Image Jul 23, 2025, 02_33_11 PM.png');
       background-size: cover;
       background-position: center;
@@ -21,6 +37,7 @@
       color: #fff;
       text-shadow: 1px 1px 2px #000;
     }
+
     .info-box {
       width: 300px;
       background: rgba(0, 0, 0, 0.6);
@@ -32,22 +49,24 @@
       margin-right: 40px;
     }
     .info-box p { margin: 8px 0; }
+
     .main-content {
       display: flex;
       flex-direction: column;
       align-items: center;
       z-index: 1;
     }
+
     h1 {
       font-size: 28px;
       animation: blink 1s infinite;
       margin-bottom: 16px;
     }
+
     #emojiBox { transition: all 0.5s ease; }
     #emojiBox.active { transform: scale(1.3) rotate(10deg); }
 
     .pixel-button {
-      font-family: 'Press Start 2P', cursive;
       font-size: 14px;
       padding: 12px 20px;
       background: #ffcc00;
@@ -71,9 +90,10 @@
       flex-direction: column;
       align-items: center;
     }
-    textarea, input {
+
+    input,
+    textarea {
       width: 100%;
-      font-family: 'Press Start 2P', cursive;
       font-size: 14px;
       padding: 8px;
       background: #fffde7;
@@ -98,8 +118,8 @@
     @keyframes blink {
       0%,50%,100% { opacity: 1; } 25%,75% { opacity: 0; }
     }
+
     #thankyou {
-      font-family: 'Press Start 2P', cursive;
       font-size: 14px;
       color: #ff4444;
       margin-top: 12px;
@@ -107,12 +127,45 @@
       display: none;
       text-align: center;
     }
+
     .crow {
       position: absolute;
       width: 80px;
       height: 80px;
       z-index: 1000;
       cursor: pointer;
+    }
+
+    /* Responsive cho mobile */
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column-reverse;
+        overflow-y: auto;
+        padding: 10px;
+        height: auto;
+      }
+      .info-box, .main-content {
+        width: 100%;
+        margin: 0 0 20px;
+      }
+      .info-box {
+        margin-top: 20px;
+        margin-right: 0;
+      }
+      h1 {
+        font-size: 24px;
+      }
+      .pixel-button {
+        font-size: 12px;
+        padding: 10px 16px;
+      }
+      .frame {
+        width: 100%;
+      }
+      #emojiBox img {
+        width: 100px;
+        height: 100px;
+      }
     }
   </style>
 </head>
@@ -122,7 +175,6 @@
     <p>⏳ <strong>Harvest time:</strong> <span id="countdown">Loading...</span></p>
     <p>🧑‍🌾 Need your help to collect the crops with me, hope we earn a lot from this!</p>
   </div>
-
   <div class="main-content">
     <h1>POP THE CORN!</h1>
     <div id="emojiBox">
@@ -136,9 +188,7 @@
       <p id="thankyou">THANK YOU SO MUCHHH!</p>
     </div>
   </div>
-
   <audio id="crowAudio" src="assets/music/crow effect.mp3"></audio>
-
   <script>
     function updateCountdown() {
       const target = new Date("2025-09-14T09:00:00+07:00");
@@ -180,10 +230,7 @@
 
     function startCountdown() {
       const wish = document.getElementById("wishInput").value.trim();
-      if (!wish) {
-        alert("You have to make a wish to the farmer first");
-        return;
-      }
+      if (!wish) { alert("You have to make a wish to the farmer first"); return; }
       const btn = document.getElementById("cookBtn");
       btn.disabled = true;
       let count = 3;
