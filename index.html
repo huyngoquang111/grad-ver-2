@@ -113,9 +113,10 @@
     <h1>COLLECT THE CORN</h1>
     <div id="emojiBox"><img src="assets/images/corn.png" alt="Corn" loading="lazy"></div>
     <div class="progress-container"><div id="progressBar"></div></div>
-    <button id="collectBtn" class="pixel-button" disabled>COLLECT</button>
+    <p id="collectPrompt" style="font-size:14px;margin:8px 0;display:none;">Leave a note to help me collect the crops</p>
+    <button id="collectBtn" class="pixel-button" style="display:none;">COLLECT</button>
     <button id="cookBtn" class="pixel-button" style="display:none;">COOK</button>
-    <button id="reloadBtn" class="pixel-button" onclick="location.reload()">RELOAD</button>
+    <button id="reloadBtn" class="pixel-button" onclick="location.reload()" style="display:none;">RELOAD</button>
     <div class="frame">
       <input type="text" id="nameInput" placeholder="Your name (required)">
       <textarea id="wishInput" placeholder="Write your wish (required)..."></textarea>
@@ -154,19 +155,19 @@
     const progressBar = document.getElementById('progressBar');
     const collectBtn = document.getElementById('collectBtn');
     const cookBtn = document.getElementById('cookBtn');
+    const reloadBtn = document.getElementById('reloadBtn');
     const emojiBox = document.getElementById('emojiBox');
     const nameInput = document.getElementById('nameInput');
     const wishInput = document.getElementById('wishInput');
-    function updateCollectBtn() {
-      collectBtn.disabled = !(nameInput.value.trim() && wishInput.value.trim());
+    const collectPrompt = document.getElementById('collectPrompt');
+    function updateCollectUI() {
+      const ready = nameInput.value.trim() && wishInput.value.trim();
+      collectPrompt.style.display = ready ? 'block' : 'none';
+      collectBtn.style.display = ready ? 'inline-block' : 'none';
     }
-    nameInput.addEventListener('input', updateCollectBtn);
-    wishInput.addEventListener('input', updateCollectBtn);
+    nameInput.addEventListener('input', updateCollectUI);
+    wishInput.addEventListener('input', updateCollectUI);
     collectBtn.addEventListener('click', () => {
-      if (!nameInput.value.trim() || !wishInput.value.trim()) {
-        alert('I have too much corns here, help me to collect them and leave a note.');
-        return;
-      }
       collectCount++;
       progressBar.style.width = (collectCount / maxCollect * 100) + '%';
       emojiBox.innerHTML = '';
@@ -176,6 +177,7 @@
         emojiBox.appendChild(img);
       }
       if (collectCount === maxCollect) {
+        collectPrompt.style.display = 'none';
         collectBtn.style.display = 'none';
         startCookProcess();
       }
@@ -199,7 +201,7 @@
       emojiBox.classList.add('active');
       const count = isMobile ? 50 : 200;
       for (let i = 0; i < count; i++) createPopcornGIF(emojiBox);
-      document.getElementById('reloadBtn').style.display = 'inline-block';
+      reloadBtn.style.display = 'inline-block';
     }
     function createPopcornGIF(origin) {
       const gif = document.createElement('img'); gif.className = 'popcorn-gif'; gif.src = 'assets/images/popcorn tiny.png';
