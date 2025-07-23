@@ -6,98 +6,100 @@
   <title>COLLECT the corn!</title>
   <style>
     @font-face { font-family: 'ArcadeClassic'; src: url('assets/font/ARCADECLASSIC.TTF') format('truetype'); }
-    body, .pixel-button, input, textarea, #thankyou { font-family: 'ArcadeClassic', monospace; }
+    body, .pixel-button, input, textarea, #thankyou {
+      font-family: 'ArcadeClassic', monospace;
+    }
     body {
       background: url('assets/images/ChatGPT Image Jul 23, 2025, 02_33_11 PM.png') center/cover no-repeat;
-      margin:0; padding:0;
-      height:100vh; overflow:hidden;
-      display:flex; flex-direction:row;
-      align-items:center; justify-content:center;
-      color:#fff; text-shadow:1px 1px 2px #000;
+      margin: 0; padding: 0;
+      height: 100vh; overflow: hidden;
+      display: flex; flex-direction: row;
+      align-items: center; justify-content: center;
+      color: #fff; text-shadow: 1px 1px 2px #000;
     }
     .info-box {
-      width:300px; background:rgba(0,0,0,0.6);
-      padding:20px; border:3px solid #fff176;
-      border-radius:10px; font-size:14px;
-      line-height:1.6; margin-right:40px;
+      width: 300px; background: rgba(0,0,0,0.6);
+      padding: 20px; border: 3px solid #fff176;
+      border-radius: 10px; font-size: 14px;
+      line-height: 1.6; margin-right: 40px;
+      text-align: left;
     }
-    .info-box p { margin:8px 0; }
+    .info-box p { margin: 8px 0; }
     .main-content {
-      display:flex; flex-direction:column;
-      align-items:center; z-index:1;
+      display: flex; flex-direction: column;
+      align-items: center; text-align: center;
+      z-index: 1;
     }
     h1 {
-      font-size:56px; animation:blink 1s infinite;
-      margin-bottom:16px;
+      font-size: 56px; animation: blink 1s infinite;
+      margin-bottom: 16px;
     }
     @keyframes blink { 0%,50%,100%{opacity:1;}25%,75%{opacity:0;} }
     #emojiBox img {
-      width:120px; height:120px;
-      transition:transform .5s ease;
+      width: 120px; height: 120px;
+      transition: transform .5s ease;
     }
-    #emojiBox.active img { transform:scale(1.3) rotate(10deg); }
+    #emojiBox.active img { transform: scale(1.3) rotate(10deg); }
     .progress-container {
-      width:120px; height:12px; background:#444;
-      border:2px solid #fff176; border-radius:6px;
-      overflow:hidden; margin:8px 0;
+      width: 120px; height: 12px; background: #444;
+      border: 2px solid #fff176; border-radius: 6px;
+      overflow: hidden; margin: 8px 0;
     }
     #progressBar {
-      width:0%; height:100%; background:#ffcc00;
-      transition:width .3s ease;
+      width: 0%; height: 100%; background: #ffcc00;
+      transition: width .3s ease;
     }
     .pixel-button {
-      font-size:14px; padding:12px 20px;
-      background:#ffcc00; color:#000;
-      border:4px solid #000; cursor:pointer;
-      margin:8px; transition:background .2s;
+      font-size: 14px; padding: 12px 20px;
+      background: #ffcc00; color: #000;
+      border: 4px solid #000; cursor: pointer;
+      margin: 8px; transition: background .2s;
     }
-    .pixel-button:hover { background:#ffaa00; }
+    .pixel-button:hover { background: #ffaa00; }
     .frame {
-      background:rgba(0,0,0,0.6); border:3px dashed #fff176;
-      padding:20px; margin-top:20px; width:300px;
-      border-radius:10px; box-shadow:0 0 10px #00000088;
-      display:flex; flex-direction:column;
-      align-items:center;
+      background: rgba(0,0,0,0.6); border: 3px dashed #fff176;
+      padding: 20px; margin-top: 20px; width: 300px;
+      border-radius: 10px; box-shadow: 0 0 10px #00000088;
+      display: flex; flex-direction: column;
+      align-items: center; text-align: center;
     }
     input, textarea {
-      width:100%; font-size:14px; padding:8px;
-      background:#fffde7; border:2px solid #000;
-      margin-bottom:12px; box-sizing:border-box;
+      width: 100%; font-size: 14px; padding: 8px;
+      background: #fffde7; border: 2px solid #000;
+      margin-bottom: 12px; box-sizing: border-box;
     }
-    textarea { height:80px; resize:none; }
+    textarea { height: 80px; resize: none; }
     .popcorn-gif {
-      position:absolute; pointer-events:none;
-      z-index:0; width:30px; height:30px;
-      animation:pop 2s ease-out forwards;
-      contain:layout paint;
+      position: absolute; pointer-events: none;
+      z-index: 0; width: 30px; height: 30px;
+      animation: pop 2s ease-out forwards;
+      contain: layout paint;
     }
-    @keyframes pop { 0%{opacity:1;transform:translate(0,0) scale(1) rotate(0deg);}100%{opacity:0;transform:translate(var(--x),var(--y)) scale(0.7) rotate(var(--r));} }
+    @keyframes pop {
+      0% { opacity: 1; transform: translate(0,0) scale(1) rotate(0deg); }
+      100% { opacity: 0; transform: translate(var(--x),var(--y)) scale(0.7) rotate(var(--r)); }
+    }
     #thankyou {
-      font-size:14px; color:#ff4444;
-      margin-top:12px; animation:blink 1s infinite;
-      display:none; text-align:center;
+      font-size: 14px; color: #ff4444;
+      margin-top: 12px; display: none;
+      text-align: center;
     }
     .crow {
-      position:absolute; width:80px; height:80px;
-      cursor:pointer; z-index:1000;
+      position: absolute; width: 80px; height: 80px;
+      cursor: pointer; z-index: 1000;
     }
-    /* Desktop-only crow logic */
-    @media (min-width: 769px) {
-      /* keep crows visible */
-    }
-    /* Mobile: hide crows */
     @media (max-width: 768px) {
       body {
-        flex-direction:column-reverse; overflow-y:auto;
-        padding:10px; height:auto;
+        flex-direction: column-reverse; overflow-y: auto;
+        padding: 10px; height: auto;
       }
-      .info-box, .main-content { width:100%; margin:0 0 20px; }
-      .info-box { margin-top:20px; margin-right:0; }
-      h1 { font-size:32px; }
-      #emojiBox img { width:100px; height:100px; }
-      .frame { width:100%; }
-      .pixel-button { font-size:12px; padding:10px 16px; }
-      .crow { display:none !important; }
+      .info-box, .main-content { width: 100%; margin: 0 0 20px; }
+      .info-box { margin-top: 20px; margin-right: 0; }
+      h1 { font-size: 32px; animation: none; }
+      #emojiBox img { width: 100px; height: 100px; }
+      .frame { width: 100%; }
+      .pixel-button { font-size: 12px; padding: 10px 16px; }
+      .crow { display: none !important; }
     }
   </style>
 </head>
@@ -108,21 +110,21 @@
     <p>🧑‍🌾 Need your help to collect the crops with me!</p>
   </div>
   <div class="main-content">
-    <h1>COLLECT THE CORN</n<h1>
+    <h1>COLLECT THE CORN</h1>
     <div id="emojiBox"><img src="assets/images/corn.png" alt="Corn" loading="lazy"></div>
     <div class="progress-container"><div id="progressBar"></div></div>
     <button id="collectBtn" class="pixel-button" disabled>COLLECT</button>
     <button id="cookBtn" class="pixel-button" style="display:none;">COOK</button>
     <div class="frame">
-      <input type="text" id="nameInput" placeholder="Your name (optional)">
-      <textarea id="wishInput" placeholder="Write your wish..."></textarea>
+      <input type="text" id="nameInput" placeholder="Your name (required)">
+      <textarea id="wishInput" placeholder="Write your wish (required)..."></textarea>
       <p id="thankyou">THANK YOU SO MUCHHH!</p>
     </div>
   </div>
   <audio id="crowAudio" src="assets/music/crow effect.mp3" preload="metadata"></audio>
   <script>
     const isMobile = window.matchMedia('(max-width:768px)').matches;
-    // Crow logic: only on desktop
+    // Crow logic desktop only
     let crowCount = 0;
     function spawnCrows() {
       crowCount = 0;
@@ -140,9 +142,9 @@
       document.body.addEventListener('click', e => {
         if (e.target.classList.contains('crow')) {
           const audio = document.getElementById('crowAudio');
-          audio.currentTime=0; audio.play(); setTimeout(()=>audio.pause(),4000);
+          audio.currentTime = 0; audio.play(); setTimeout(() => audio.pause(), 4000);
           e.target.remove(); crowCount++;
-          if (crowCount === 5) setTimeout(spawnCrows,1000);
+          if (crowCount === 5) setTimeout(spawnCrows, 1000);
         }
       });
     }
@@ -152,21 +154,79 @@
     const collectBtn = document.getElementById('collectBtn');
     const cookBtn = document.getElementById('cookBtn');
     const emojiBox = document.getElementById('emojiBox');
+    const nameInput = document.getElementById('nameInput');
     const wishInput = document.getElementById('wishInput');
-    wishInput.addEventListener('input', ()=>{
-      collectBtn.disabled = wishInput.value.trim()==='';
+    function updateCollectBtn() {
+      collectBtn.disabled = !(nameInput.value.trim() && wishInput.value.trim());
+    }
+    nameInput.addEventListener('input', updateCollectBtn);
+    wishInput.addEventListener('input', updateCollectBtn);
+    collectBtn.addEventListener('click', () => {
+      if (!nameInput.value.trim() || !wishInput.value.trim()) {
+        alert('I have too much corns here, help me to collect them and leave a note.');
+        return;
+      }
+      collectCount++;
+      progressBar.style.width = (collectCount / maxCollect * 100) + '%';
+      emojiBox.innerHTML = '';
+      for (let i = 0; i < collectCount; i++) {
+        const img = document.createElement('img');
+        img.src = 'assets/images/corn.png'; img.width = 50; img.height = 50; img.loading = 'lazy';
+        emojiBox.appendChild(img);
+      }
+      if (collectCount === maxCollect) {
+        collectBtn.style.display = 'none';
+        startCookProcess();
+      }
     });
-    collectBtn.addEventListener('click', ()=>{
-      collectCount++; progressBar.style.width=(collectCount/maxCollect*100)+'%';
-      emojiBox.innerHTML='';
-      for(let i=0;i<collectCount;i++){ const img=document.createElement('img'); img.src='assets/images/corn.png'; img.width=50; img.height=50; img.loading='lazy'; emojiBox.appendChild(img);}      
-      if(collectCount===maxCollect){ collectBtn.style.display='none'; startCookProcess(); }
-    });
-    function startCookProcess(){ let t=3; cookBtn.style.display='inline-block'; cookBtn.disabled=true; cookBtn.textContent=`COOK (${t})`; const iv=setInterval(()=>{ t--; cookBtn.textContent=t>0?`COOK (${t})`:'COOKED!'; if(t<0){ clearInterval(iv); transformCorn(); } },1000); }
-    function transformCorn(){ emojiBox.innerHTML=`<img src="assets/images/popcorn_transparent.png" width="120" height="120" loading="lazy" alt="Popcorn Box">`; emojiBox.classList.add('active'); let count=isMobile?50:200; for(let i=0;i<count;i++) createPopcornGIF(emojiBox); document.getElementById('againBtn').style.display='inline-block'; }
-    function createPopcornGIF(origin){ const gif=document.createElement('img'); gif.className='popcorn-gif'; gif.src='assets/images/popcorn tiny.png'; const rect=origin.getBoundingClientRect(); gif.style.left=`${rect.left+rect.width/2}px`; gif.style.top=`${rect.top+rect.height/2}px`; const x=(Math.random()-0.5)*2*window.innerWidth, y=(Math.random()-0.5)*2*window.innerHeight, r=`${Math.random()*360}deg`; gif.style.setProperty('--x',`${x}px`); gif.style.setProperty('--y',`${y}px`); gif.style.setProperty('--r',r); document.body.appendChild(gif); setTimeout(()=>gif.remove(),2000);}    
+    function startCookProcess() {
+      let t = 3;
+      cookBtn.style.display = 'inline-block';
+      cookBtn.disabled = true;
+      cookBtn.textContent = `COOK (${t})`;
+      const iv = setInterval(() => {
+        t--;
+        cookBtn.textContent = t > 0 ? `COOK (${t})` : 'COOKED!';
+        if (t < 0) {
+          clearInterval(iv);
+          transformCorn();
+        }
+      }, 1000);
+    }
+    function transformCorn() {
+      emojiBox.innerHTML = `<img src="assets/images/popcorn_transparent.png" width="120" height="120" loading="lazy" alt="Popcorn Box">`;
+      emojiBox.classList.add('active');
+      const count = isMobile ? 50 : 200;
+      for (let i = 0; i < count; i++) createPopcornGIF(emojiBox);
+      document.getElementById('againBtn').style.display = 'inline-block';
+    }
+    function createPopcornGIF(origin) {
+      const gif = document.createElement('img'); gif.className = 'popcorn-gif'; gif.src = 'assets/images/popcorn tiny.png';
+      const rect = origin.getBoundingClientRect();
+      gif.style.left = `${rect.left + rect.width/2}px`;
+      gif.style.top = `${rect.top + rect.height/2}px`;
+      const x = (Math.random()-0.5)*2*window.innerWidth;
+      const y = (Math.random()-0.5)*2*window.innerHeight;
+      const r = `${Math.random()*360}deg`;
+      gif.style.setProperty('--x', `${x}px`);
+      gif.style.setProperty('--y', `${y}px`);
+      gif.style.setProperty('--r', r);
+      document.body.appendChild(gif);
+      setTimeout(() => gif.remove(), 2000);
+    }
     // Countdown
-    function updateCountdown(){ const target=new Date("2025-09-14T09:00:00+07:00"), now=new Date(), diff=target-now; if(diff>0){ const h=String(Math.floor(diff/3600000)).padStart(2,'0'), m=String(Math.floor((diff/60000)%60)).padStart(2,'0'), s=String(Math.floor((diff/1000)%60)).padStart(2,'0'); document.getElementById('countdown').textContent=`${h}:${m}:${s}`;} else document.getElementById('countdown').textContent="It's harvest time!";} setInterval(updateCountdown,1000); updateCountdown();
+    function updateCountdown() {
+      const target = new Date("2025-09-14T09:00:00+07:00"), now = new Date(), diff = target - now;
+      if (diff > 0) {
+        const h = String(Math.floor(diff/3600000)).padStart(2,'0'),
+              m = String(Math.floor((diff/60000)%60)).padStart(2,'0'),
+              s = String(Math.floor((diff/1000)%60)).padStart(2,'0');
+        document.getElementById('countdown').textContent = `${h}:${m}:${s}`;
+      } else {
+        document.getElementById('countdown').textContent = "It's harvest time!";
+      }
+    }
+    setInterval(updateCountdown,1000); updateCountdown();
   </script>
 </body>
 </html>
