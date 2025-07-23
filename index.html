@@ -1,3 +1,4 @@
+<!-- 👇 Giữ nguyên phần <html>, <head> ban đầu -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -135,6 +136,24 @@
       display: none;
       text-align: center;
     }
+
+    #crowContainer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .crow {
+      position: absolute;
+      font-size: 32px;
+      cursor: pointer;
+      pointer-events: auto;
+      transition: opacity 0.3s ease;
+    }
   </style>
 </head>
 <body>
@@ -148,7 +167,7 @@
     <h1>POP THE CORN!</h1>
     <div id="emojiBox">🌽</div>
 
-    <button id="cookBtn" class="pixel-button" onclick="startCountdown()">COOK</button>
+    <button id="cookBtn" class="pixel-button" onclick="handleCook()">COOK</button>
     <button id="againBtn" class="pixel-button" style="display:none;" onclick="reset()">AGAIN</button>
 
     <div class="frame">
@@ -158,8 +177,11 @@
     </div>
   </div>
 
+  <!-- 👇 Container cho quạ -->
+  <div id="crowContainer"></div>
+
   <script>
-    // Countdown to 14/09/2025
+    // Cập nhật countdown
     function updateCountdown() {
       const target = new Date("2025-09-14T00:00:00");
       const now = new Date();
@@ -178,6 +200,16 @@
     updateCountdown();
 
     let transformed = false;
+
+    // Bắt buộc nhập lời chúc
+    function handleCook() {
+      const wishInput = document.getElementById("wishInput");
+      if (wishInput.value.trim() === "") {
+        alert("Please write your wish before cooking! 🌽🙏");
+        return;
+      }
+      startCountdown();
+    }
 
     function startCountdown() {
       const btn = document.getElementById("cookBtn");
@@ -209,25 +241,23 @@
         createPopcornGIF(emojiBox);
       }
 
-      if (wishText.trim() !== "") {
-        fetch("https://formspree.io/f/mwpqlnln", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-          },
-          body: JSON.stringify({
-            name: nameText,
-            wish: wishText
-          })
+      fetch("https://formspree.io/f/mwpqlnln", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({
+          name: nameText,
+          wish: wishText
         })
-        .then(res => res.json())
-        .then(data => {
-          console.log("Saved:", data);
-          thankyou.style.display = "block";
-        })
-        .catch(err => console.error("Error:", err));
-      }
+      })
+      .then(res => res.json())
+      .then(data => {
+        console.log("Saved:", data);
+        thankyou.style.display = "block";
+      })
+      .catch(err => console.error("Error:", err));
 
       document.getElementById("againBtn").style.display = "inline-block";
     }
@@ -266,6 +296,39 @@
       document.body.appendChild(gif);
       setTimeout(() => gif.remove(), 2000);
     }
+
+    // Quạ
+    const crowContainer = document.getElementById("crowContainer");
+    let crowCount = 10;
+
+    function generateCrows() {
+      crowContainer.innerHTML = "";
+      for (let i = 0; i < 10; i++) {
+        const crow = document.createElement("div");
+        crow.classList.add("crow");
+        crow.textContent = "🐦‍⬛";
+
+        crow.style.left = `${Math.random() * 90}vw`;
+        crow.style.top = `${Math.random() * 80}vh`;
+
+        crow.addEventListener("click", () => {
+          crow.style.opacity = "0";
+          crow.style.pointerEvents = "none";
+          crowCount--;
+
+          if (crowCount === 0) {
+            setTimeout(() => {
+              crowCount = 10;
+              generateCrows();
+            }, 1000);
+          }
+        });
+
+        crowContainer.appendChild(crow);
+      }
+    }
+
+    generateCrows();
   </script>
 </body>
 </html>
