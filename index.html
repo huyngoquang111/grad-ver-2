@@ -188,30 +188,27 @@
     setInterval(updateCountdown, 1000);
     updateCountdown();
 
-    // Enable nút COOK khi đủ điều kiện
-    let crowCount = 0;
+    // Enable nút COOK chỉ dựa trên wish
     document.getElementById("wishInput").addEventListener("input", checkCookButton);
     function checkCookButton() {
       const wish = document.getElementById("wishInput").value.trim();
-      document.getElementById("cookBtn").disabled = wish === "" || crowCount < 10;
+      document.getElementById("cookBtn").disabled = wish === "";
     }
 
     // Spawn 10 quạ và respawn khi click đủ 10
+    let crowCount = 0;
     function spawnCrows() {
       crowCount = 0;
       for (let i = 0; i < 10; i++) {
         const crow = document.createElement("img");
         crow.src = "assets/images/ChatGPT Image Jul 23, 2025, 05_03_14 PM.png";
         crow.className = "crow";
-        crow.style.top = Math.random() * 80 + "%";
-        crow.style.left = Math.random() * 80 + "%";
+        crow.style.top = `${Math.random() * 80}%`;
+        crow.style.left = `${Math.random() * 80}%`;
         crow.onclick = () => {
           crow.remove();
           crowCount++;
-          checkCookButton();
-          if (crowCount >= 10 && document.getElementById("wishInput").value.trim() !== "") {
-            setTimeout(spawnCrows, 1000);
-          }
+          if (crowCount >= 10) setTimeout(spawnCrows, 1000);
         };
         document.body.appendChild(crow);
       }
@@ -236,7 +233,7 @@
       }, 1000);
     }
 
-    // Thay bắp thành hộp và bắn hạt
+    // Thay bắp thành hộp và bắn hạt tràn màn hình trong 2s
     function transformCorn() {
       const emojiBox = document.getElementById("emojiBox");
       const wishText = document.getElementById("wishInput").value.trim();
@@ -246,17 +243,15 @@
       emojiBox.innerHTML = `<img src="assets/images/popcorn_transparent.png" style="width:120px;height:120px;">`;
       emojiBox.classList.add("active");
 
-      for (let i = 0; i < 40; i++) {
+      // spawn nhiều hạt để tràn màn hình
+      for (let i = 0; i < 200; i++) {
         createPopcornGIF(emojiBox);
       }
 
       if (wishText !== "") {
         fetch("https://formspree.io/f/mwpqlnln", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-          },
+          headers: { "Content-Type": "application/json", "Accept": "application/json" },
           body: JSON.stringify({ name: nameText, wish: wishText })
         })
         .then(res => res.json())
@@ -281,20 +276,19 @@
       spawnCrows();
     }
 
-    // Tạo hạt bỏng nổ ra
+    // Tạo hạt bỏng nổ ra khắp màn
     function createPopcornGIF(origin) {
       const gif = document.createElement("img");
       gif.className = "popcorn-gif";
       gif.src = "assets/images/popcorn tiny.png";
+      gif.style.animation = "pop 2s ease-out forwards";
 
       const rect = origin.getBoundingClientRect();
       gif.style.left = `${rect.left + rect.width/2}px`;
       gif.style.top = `${rect.top + rect.height/2}px`;
 
-      const angle = Math.random() * 2 * Math.PI;
-      const distance = Math.random() * 600 + 100;
-      const x = Math.cos(angle) * distance;
-      const y = Math.sin(angle) * distance;
+      const x = (Math.random() - 0.5) * 2 * window.innerWidth;
+      const y = (Math.random() - 0.5) * 2 * window.innerHeight;
       const r = `${Math.random() * 360}deg`;
 
       gif.style.setProperty('--x', `${x}px`);
