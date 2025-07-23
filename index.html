@@ -1,4 +1,3 @@
-<!-- 👇 Giữ nguyên phần <html>, <head> ban đầu -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,12 +26,12 @@
       position: absolute;
       top: 20px;
       left: 20px;
-      width: 280px;
+      width: 320px;
       background: rgba(0, 0, 0, 0.6);
-      padding: 14px;
+      padding: 16px;
       border: 3px solid #fff176;
       border-radius: 10px;
-      font-size: 8px;
+      font-size: 10px;
       line-height: 1.8;
     }
 
@@ -149,17 +148,24 @@
 
     .crow {
       position: absolute;
-      font-size: 32px;
+      width: 40px;
+      height: 40px;
       cursor: pointer;
       pointer-events: auto;
       transition: opacity 0.3s ease;
+    }
+
+    .crow img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
     }
   </style>
 </head>
 <body>
   <div class="info-box">
     <p>🌽 <strong>Farm owner:</strong> Ngô Quang Huy</p>
-    <p>⏳ <strong>Harvest time:</strong> <span id="countdown">Loading...</span></p>
+    <p>⏳ <strong>Harvest countdown:</strong> <span id="countdown">Loading...</span></p>
     <p>🧑‍🌾 Need your help to collect the crops with me, hope we earn a lot from this!</p>
   </div>
 
@@ -177,20 +183,20 @@
     </div>
   </div>
 
-  <!-- 👇 Container cho quạ -->
   <div id="crowContainer"></div>
 
   <script>
-    // Cập nhật countdown
+    // Countdown to 9AM on 14/09/2025
     function updateCountdown() {
-      const target = new Date("2025-09-14T00:00:00");
+      const target = new Date("2025-09-14T09:00:00+07:00"); // Vietnam time
       const now = new Date();
       const diff = target - now;
 
       if (diff > 0) {
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-        document.getElementById("countdown").textContent = `${days} days ${hours} hours`;
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        document.getElementById("countdown").textContent = `${hours}h ${minutes}m ${seconds}s`;
       } else {
         document.getElementById("countdown").textContent = "It's harvest time!";
       }
@@ -201,7 +207,6 @@
 
     let transformed = false;
 
-    // Bắt buộc nhập lời chúc
     function handleCook() {
       const wishInput = document.getElementById("wishInput");
       if (wishInput.value.trim() === "") {
@@ -306,7 +311,10 @@
       for (let i = 0; i < 10; i++) {
         const crow = document.createElement("div");
         crow.classList.add("crow");
-        crow.textContent = "🐦‍⬛";
+
+        const img = document.createElement("img");
+        img.src = "assets/images/ChatGPT Image Jul 23, 2025, 05_03_14 PM.png";
+        crow.appendChild(img);
 
         crow.style.left = `${Math.random() * 90}vw`;
         crow.style.top = `${Math.random() * 80}vh`;
