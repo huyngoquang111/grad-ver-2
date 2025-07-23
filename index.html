@@ -12,16 +12,10 @@
       font-weight: normal;
       font-style: normal;
     }
-
     /* Áp dụng font cho toàn bộ */
-    body,
-    .pixel-button,
-    input,
-    textarea,
-    #thankyou {
+    body, .pixel-button, input, textarea, #thankyou {
       font-family: 'ArcadeClassic', monospace;
     }
-
     body {
       background-image: url('assets/images/ChatGPT Image Jul 23, 2025, 02_33_11 PM.png');
       background-size: cover;
@@ -37,10 +31,9 @@
       color: #fff;
       text-shadow: 1px 1px 2px #000;
     }
-
     .info-box {
       width: 300px;
-      background: rgba(0, 0, 0, 0.6);
+      background: rgba(0,0,0,0.6);
       padding: 20px;
       border: 3px solid #fff176;
       border-radius: 10px;
@@ -49,23 +42,19 @@
       margin-right: 40px;
     }
     .info-box p { margin: 8px 0; }
-
     .main-content {
       display: flex;
       flex-direction: column;
       align-items: center;
       z-index: 1;
     }
-
     h1 {
       font-size: 28px;
       animation: blink 1s infinite;
       margin-bottom: 16px;
     }
-
-    #emojiBox { transition: all 0.5s ease; }
-    #emojiBox.active { transform: scale(1.3) rotate(10deg); }
-
+    #emojiBox img { transition: transform 0.5s ease; }
+    #emojiBox.active img { transform: scale(1.3) rotate(10deg); }
     .pixel-button {
       font-size: 14px;
       padding: 12px 20px;
@@ -77,9 +66,8 @@
       transition: background 0.2s;
     }
     .pixel-button:hover { background: #ffaa00; }
-
     .frame {
-      background: rgba(0, 0, 0, 0.6);
+      background: rgba(0,0,0,0.6);
       border: 3px dashed #fff176;
       padding: 20px;
       margin-top: 20px;
@@ -90,9 +78,7 @@
       flex-direction: column;
       align-items: center;
     }
-
-    input,
-    textarea {
+    input, textarea {
       width: 100%;
       font-size: 14px;
       padding: 8px;
@@ -102,7 +88,6 @@
       box-sizing: border-box;
     }
     textarea { height: 80px; resize: none; }
-
     .popcorn-gif {
       position: absolute;
       pointer-events: none;
@@ -110,6 +95,7 @@
       width: 30px;
       height: 30px;
       animation: pop 2s ease-out forwards;
+      contain: layout paint;
     }
     @keyframes pop {
       0% { opacity: 1; transform: translate(0,0) scale(1) rotate(0deg); }
@@ -118,7 +104,6 @@
     @keyframes blink {
       0%,50%,100% { opacity: 1; } 25%,75% { opacity: 0; }
     }
-
     #thankyou {
       font-size: 14px;
       color: #ff4444;
@@ -127,15 +112,14 @@
       display: none;
       text-align: center;
     }
-
     .crow {
       position: absolute;
       width: 80px;
       height: 80px;
       z-index: 1000;
       cursor: pointer;
+      loading: lazy;
     }
-
     /* Responsive cho mobile */
     @media (max-width: 768px) {
       body {
@@ -144,28 +128,12 @@
         padding: 10px;
         height: auto;
       }
-      .info-box, .main-content {
-        width: 100%;
-        margin: 0 0 20px;
-      }
-      .info-box {
-        margin-top: 20px;
-        margin-right: 0;
-      }
-      h1 {
-        font-size: 24px;
-      }
-      .pixel-button {
-        font-size: 12px;
-        padding: 10px 16px;
-      }
-      .frame {
-        width: 100%;
-      }
-      #emojiBox img {
-        width: 100px;
-        height: 100px;
-      }
+      .info-box, .main-content { width: 100%; margin: 0 0 20px; }
+      .info-box { margin-top: 20px; margin-right: 0; }
+      h1 { font-size: 24px; }
+      .pixel-button { font-size: 12px; padding: 10px 16px; }
+      .frame { width: 100%; }
+      #emojiBox img { width: 100px; height: 100px; }
     }
   </style>
 </head>
@@ -178,7 +146,12 @@
   <div class="main-content">
     <h1>POP THE CORN!</h1>
     <div id="emojiBox">
-      <img src="assets/images/corn.png" style="width:120px;height:120px;">
+      <img 
+        src="assets/images/corn.png" 
+        srcset="assets/images/corn-small.webp 200w, assets/images/corn.png 400w" 
+        sizes="(max-width:768px) 100px, 120px" 
+        width="120" height="120" 
+        loading="lazy" alt="Corn">  
     </div>
     <button id="cookBtn" class="pixel-button" onclick="startCountdown()">COOK</button>
     <button id="againBtn" class="pixel-button" onclick="location.reload()" style="display:none;">AGAIN</button>
@@ -188,8 +161,9 @@
       <p id="thankyou">THANK YOU SO MUCHHH!</p>
     </div>
   </div>
-  <audio id="crowAudio" src="assets/music/crow effect.mp3"></audio>
+  <audio id="crowAudio" src="assets/music/crow effect.mp3" preload="metadata"></audio>
   <script>
+    // Countdown đến 9h00 ngày 14/09/2025
     function updateCountdown() {
       const target = new Date("2025-09-14T09:00:00+07:00");
       const now = new Date();
@@ -215,19 +189,24 @@
         crow.className = "crow";
         crow.style.top = `${Math.random()*80}%`;
         crow.style.left = `${Math.random()*80}%`;
-        crow.onclick = () => {
-          const audio = document.getElementById('crowAudio');
-          audio.currentTime = 0;
-          audio.play();
-          setTimeout(() => audio.pause(), 4000);
-          crow.remove();
-          crowCount++;
-          if (crowCount === 10) setTimeout(spawnCrows,1000);
-        };
         document.body.appendChild(crow);
       }
     }
     spawnCrows();
+
+    // Delegate click handler for crows
+    document.body.addEventListener('click', e => {
+      if (e.target.classList.contains('crow')) {
+        const crow = e.target;
+        const audio = document.getElementById('crowAudio');
+        audio.currentTime = 0;
+        audio.play();
+        setTimeout(() => audio.pause(), 4000);
+        crow.remove();
+        crowCount++;
+        if (crowCount === 10) setTimeout(spawnCrows, 1000);
+      }
+    });
 
     function startCountdown() {
       const wish = document.getElementById("wishInput").value.trim();
@@ -247,9 +226,10 @@
       const wish = document.getElementById("wishInput").value.trim();
       const name = document.getElementById("nameInput").value.trim();
       const thankyou = document.getElementById("thankyou");
-      emojiBox.innerHTML = `<img src="assets/images/popcorn_transparent.png" style="width:120px;height:120px;">`;
+      emojiBox.innerHTML = `<img src="assets/images/popcorn_transparent.png" width="120" height="120" loading="lazy" alt="Popcorn Box">`;
       emojiBox.classList.add("active");
-      for (let i=0; i<200; i++) createPopcornGIF(emojiBox);
+      const PARTICLE_COUNT = window.matchMedia('(max-width: 768px)').matches ? 50 : 200;
+      for (let i=0; i<PARTICLE_COUNT; i++) createPopcornGIF(emojiBox);
       if (wish) fetch("https://formspree.io/f/mwpqlnln",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name,wish})})
         .then(r=>r.json()).then(() => thankyou.style.display = "block").catch(e=>console.error(e));
       document.getElementById("againBtn").style.display = "inline-block";
