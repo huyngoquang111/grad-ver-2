@@ -15,34 +15,16 @@
       height: 100vh;
       overflow: hidden;
       display: flex;
-      flex-direction: row;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       color: #fff;
       text-shadow: 1px 1px 2px #000;
-    }
-
-    .info-box {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      width: 320px;
-      background: rgba(0, 0, 0, 0.6);
-      padding: 16px;
-      border: 3px solid #fff176;
-      border-radius: 10px;
-      font-size: 10px;
-      line-height: 1.8;
-    }
-
-    .main-content {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      position: relative;
     }
 
     h1 {
-      font-size: 18px;
+      font-size: 20px;
       animation: blink 1s infinite;
       margin-bottom: 12px;
     }
@@ -50,6 +32,7 @@
     #emojiBox {
       font-size: 120px;
       transition: all 0.5s ease;
+      z-index: 2;
     }
 
     #emojiBox.active {
@@ -66,6 +49,7 @@
       cursor: pointer;
       margin: 8px;
       transition: background 0.2s;
+      z-index: 2;
     }
 
     .pixel-button:hover {
@@ -75,14 +59,12 @@
     .frame {
       background: rgba(0, 0, 0, 0.6);
       border: 3px dashed #fff176;
-      padding: 14px;
-      margin-top: 14px;
+      padding: 16px;
+      margin-top: 16px;
       width: 260px;
       border-radius: 10px;
       box-shadow: 0 0 10px #00000088;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      z-index: 2;
     }
 
     textarea, input {
@@ -107,7 +89,7 @@
       height: 200px;
       animation: pop 2s ease-out forwards;
       pointer-events: none;
-      z-index: 0;
+      z-index: 1;
     }
 
     @keyframes pop {
@@ -136,90 +118,79 @@
       text-align: center;
     }
 
-    #crowContainer {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 5;
+    #loadingText {
+      font-size: 10px;
+      margin-top: 10px;
+      animation: blink 1s infinite;
+      color: #fff;
+      display: none;
     }
 
-    .crow {
+    /* Transition scene effect */
+    #overlay {
       position: absolute;
-      width: 100px;
-      height: 100px;
-      cursor: pointer;
-      pointer-events: auto;
-      transition: opacity 0.3s ease;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(3px);
+      opacity: 0;
+      transition: opacity 1s ease;
+      pointer-events: none;
+      z-index: 1;
     }
 
-    .crow img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
+    #overlay.active {
+      opacity: 1;
+    }
+
+    #spotlight {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      box-shadow: 0 0 80px 50px rgba(255,255,255,0.3);
+      z-index: 1;
+      display: none;
     }
   </style>
 </head>
 <body>
-  <div class="info-box">
-    <p>🌽 <strong>Farm owner:</strong> Ngô Quang Huy</p>
-    <p>⏳ <strong>Harvest countdown:</strong> <span id="countdown">Loading...</span></p>
-    <p>🧑‍🌾 Need your help to collect the crops with me, hope we earn a lot from this!</p>
+
+  <h1>POP THE CORN!</h1>
+  <div id="emojiBox">🌽</div>
+
+  <button id="cookBtn" class="pixel-button" onclick="startCountdown()">COOK</button>
+  <button id="againBtn" class="pixel-button" style="display:none;" onclick="reset()">AGAIN</button>
+
+  <p id="loadingText">Loading...</p>
+
+  <div class="frame">
+    <input type="text" id="nameInput" placeholder="Your name (optional)">
+    <textarea id="wishInput" placeholder="Write your wish..."></textarea>
+    <p id="thankyou">THANK YOU SO MUCHHH!</p>
   </div>
 
-  <div class="main-content">
-    <h1>POP THE CORN!</h1>
-    <div id="emojiBox">🌽</div>
-
-    <button id="cookBtn" class="pixel-button" onclick="handleCook()">COOK</button>
-    <button id="againBtn" class="pixel-button" style="display:none;" onclick="reset()">AGAIN</button>
-
-    <div class="frame">
-      <input type="text" id="nameInput" placeholder="Your name (optional)">
-      <textarea id="wishInput" placeholder="Write your wish..."></textarea>
-      <p id="thankyou">THANK YOU SO MUCHHH!</p>
-    </div>
-  </div>
-
-  <div id="crowContainer"></div>
+  <div id="overlay"></div>
+  <div id="spotlight"></div>
 
   <script>
-    // Countdown to 9AM on 14/09/2025
-    function updateCountdown() {
-      const target = new Date("2025-09-14T09:00:00+07:00"); // Vietnam time
-      const now = new Date();
-      const diff = target - now;
-
-      if (diff > 0) {
-        const hours = Math.floor(diff / (1000 * 60 * 60));
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-        document.getElementById("countdown").textContent = `${hours}h ${minutes}m ${seconds}s`;
-      } else {
-        document.getElementById("countdown").textContent = "It's harvest time!";
-      }
-    }
-
-    setInterval(updateCountdown, 1000);
-    updateCountdown();
-
     let transformed = false;
-
-    function handleCook() {
-      const wishInput = document.getElementById("wishInput");
-      if (wishInput.value.trim() === "") {
-        alert("Please write your wish before cooking! 🌽🙏");
-        return;
-      }
-      startCountdown();
-    }
 
     function startCountdown() {
       const btn = document.getElementById("cookBtn");
+      const wish = document.getElementById("wishInput").value.trim();
+
+      if (wish === "") {
+        alert("Please write your wish first!");
+        return;
+      }
+
       let count = 3;
       btn.disabled = true;
+      document.getElementById("loadingText").style.display = "block";
 
       const countdown = setInterval(() => {
         btn.textContent = count;
@@ -241,28 +212,35 @@
       transformed = true;
       emojiBox.textContent = "🍿";
       emojiBox.classList.add("active");
+      document.getElementById("loadingText").style.display = "none";
+
+      // Overlay + Spotlight
+      document.getElementById("overlay").classList.add("active");
+      document.getElementById("spotlight").style.display = "block";
 
       for (let i = 0; i < 40; i++) {
         createPopcornGIF(emojiBox);
       }
 
-      fetch("https://formspree.io/f/mwpqlnln", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify({
-          name: nameText,
-          wish: wishText
+      if (wishText.trim() !== "") {
+        fetch("https://formspree.io/f/mwpqlnln", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          },
+          body: JSON.stringify({
+            name: nameText,
+            wish: wishText
+          })
         })
-      })
-      .then(res => res.json())
-      .then(data => {
-        console.log("Saved:", data);
-        thankyou.style.display = "block";
-      })
-      .catch(err => console.error("Error:", err));
+        .then(res => res.json())
+        .then(data => {
+          console.log("Saved:", data);
+          thankyou.style.display = "block";
+        })
+        .catch(err => console.error("Error:", err));
+      }
 
       document.getElementById("againBtn").style.display = "inline-block";
     }
@@ -276,6 +254,9 @@
       document.getElementById("thankyou").style.display = "none";
       document.getElementById("wishInput").value = "";
       document.getElementById("nameInput").value = "";
+      document.getElementById("loadingText").style.display = "none";
+      document.getElementById("overlay").classList.remove("active");
+      document.getElementById("spotlight").style.display = "none";
       transformed = false;
     }
 
@@ -301,42 +282,6 @@
       document.body.appendChild(gif);
       setTimeout(() => gif.remove(), 2000);
     }
-
-    // Quạ
-    const crowContainer = document.getElementById("crowContainer");
-    let crowCount = 10;
-
-    function generateCrows() {
-      crowContainer.innerHTML = "";
-      for (let i = 0; i < 10; i++) {
-        const crow = document.createElement("div");
-        crow.classList.add("crow");
-
-        const img = document.createElement("img");
-        img.src = "assets/images/ChatGPT Image Jul 23, 2025, 05_03_14 PM.png";
-        crow.appendChild(img);
-
-        crow.style.left = `${Math.random() * 90}vw`;
-        crow.style.top = `${Math.random() * 80}vh`;
-
-        crow.addEventListener("click", () => {
-          crow.style.opacity = "0";
-          crow.style.pointerEvents = "none";
-          crowCount--;
-
-          if (crowCount === 0) {
-            setTimeout(() => {
-              crowCount = 10;
-              generateCrows();
-            }, 1000);
-          }
-        });
-
-        crowContainer.appendChild(crow);
-      }
-    }
-
-    generateCrows();
   </script>
 </body>
 </html>
