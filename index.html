@@ -1,68 +1,81 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>POP the corn!</title>
+  <title>🎉 POP the Corn!</title>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Press Start 2P', cursive;
-      text-align: center;
+      background: url('https://i.imgur.com/YOfHB7f.jpeg') no-repeat center center/cover;
       margin: 0;
-      padding-top: 100px;
-      background-color: #fffbe6;
+      padding: 0;
       overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       height: 100vh;
+      color: #fff;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 60px;
+      padding: 40px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 10px solid #fff;
+      border-radius: 20px;
       position: relative;
-      border: 40px solid rgba(255, 204, 0, 0.2); /* frame mờ */
-      box-sizing: border-box;
+    }
+
+    .main {
+      text-align: center;
     }
 
     h1 {
-      margin-bottom: 40px;
-      font-size: 18px;
-      color: #ff6666;
-      text-shadow: 2px 2px #333;
       animation: blink 1s infinite;
+      font-size: 24px;
     }
 
     @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
+      0%, 100% { color: #fff; }
+      50% { color: #ff0; }
     }
 
     #emojiBox {
       font-size: 100px;
       transition: all 0.5s ease;
-      display: inline-block;
-      position: relative;
-      z-index: 1;
     }
 
     #emojiBox.active {
       transform: scale(1.3) rotate(10deg);
     }
 
-    .pixel-button {
-      margin-top: 30px;
-      padding: 16px 30px;
+    .button {
+      font-family: 'Press Start 2P', cursive;
+      margin-top: 20px;
+      padding: 12px 20px;
       font-size: 14px;
       background-color: #ffcc00;
-      border: 4px solid #333;
-      border-radius: 4px;
+      border: 4px solid #000;
+      border-radius: 8px;
       cursor: pointer;
-      font-family: 'Press Start 2P', cursive;
       transition: background-color 0.3s ease;
     }
 
-    .pixel-button:hover {
+    .button:hover {
       background-color: #ffaa00;
     }
 
-    #countdown {
-      font-size: 16px;
-      margin-top: 20px;
-      color: #444;
+    .hidden {
+      display: none;
+    }
+
+    .countdown {
+      font-size: 24px;
+      margin-top: 10px;
     }
 
     .popcorn-gif {
@@ -72,7 +85,6 @@
       animation: pop 2s ease-out forwards;
       pointer-events: none;
       z-index: 0;
-      will-change: transform, opacity;
     }
 
     @keyframes pop {
@@ -85,93 +97,134 @@
         transform: translate(var(--x), var(--y)) scale(0.7) rotate(var(--r));
       }
     }
+
+    .form-box {
+      display: flex;
+      flex-direction: column;
+      width: 300px;
+    }
+
+    textarea {
+      font-family: 'Arial', sans-serif;
+      font-size: 14px;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      resize: none;
+    }
+
+    .wish-output {
+      margin-top: 20px;
+      font-size: 12px;
+      color: #ff0;
+      white-space: pre-line;
+    }
   </style>
 </head>
 <body>
 
-  <h1>POP the corn!</h1>
+<div class="container">
+  <div class="main">
+    <h1>🍿 POP the Corn!</h1>
+    <div id="emojiBox">🌽</div>
+    <div id="countdown" class="countdown hidden">3</div>
+    <button id="cookBtn" class="button" onclick="startCooking()">COOK</button>
+    <button id="againBtn" class="button hidden" onclick="reset()">AGAIN</button>
+    <div class="wish-output" id="wishOutput"></div>
+  </div>
 
-  <div id="emojiBox">🌽</div>
+  <div class="form-box">
+    <label for="wish" style="margin-bottom:8px;">📝 Write your message:</label>
+    <textarea id="wish" rows="5" placeholder="Congrats on graduating! Enjoy your popcorn!"></textarea>
+  </div>
+</div>
 
-  <br>
-  <button id="cookBtn" class="pixel-button" onclick="startCooking()">COOK</button>
-  <div id="countdown"></div>
-  <br>
-  <button id="againBtn" class="pixel-button" style="display:none;" onclick="reset()">AGAIN</button>
+<script>
+  let transformed = false;
+  let wishes = [];
 
-  <script>
-    let transformed = false;
-    let countdownInterval;
+  function startCooking() {
+    const countdown = document.getElementById("countdown");
+    const button = document.getElementById("cookBtn");
+    const wishText = document.getElementById("wish").value.trim();
+    const output = document.getElementById("wishOutput");
 
-    function startCooking() {
-      const btn = document.getElementById("cookBtn");
-      const countdown = document.getElementById("countdown");
-      let count = 3;
-      countdown.textContent = `Cooking in ${count}...`;
-      btn.disabled = true;
+    // Countdown
+    countdown.classList.remove("hidden");
+    let timeLeft = 3;
+    countdown.textContent = timeLeft;
 
-      countdownInterval = setInterval(() => {
-        count--;
-        if (count > 0) {
-          countdown.textContent = `Cooking in ${count}...`;
-        } else {
-          clearInterval(countdownInterval);
-          countdown.textContent = "";
-          transform();
+    const timer = setInterval(() => {
+      timeLeft--;
+      countdown.textContent = timeLeft;
+      if (timeLeft <= 0) {
+        clearInterval(timer);
+        countdown.classList.add("hidden");
+        transform();
+        button.textContent = "COOKED!";
+        button.disabled = true;
+        button.classList.add("hidden");
+        document.getElementById("againBtn").classList.remove("hidden");
+
+        if (wishText !== "") {
+          wishes.push(wishText);
+          output.innerText = `✨ Latest message:\n"${wishText}"`;
         }
-      }, 1000);
-    }
+      }
+    }, 1000);
+  }
 
-    function transform() {
-      const emojiBox = document.getElementById("emojiBox");
-      const btn = document.getElementById("cookBtn");
-      transformed = true;
+  function transform() {
+    const emojiBox = document.getElementById("emojiBox");
+    transformed = !transformed;
 
-      emojiBox.textContent = "🍿";
-      emojiBox.classList.add("active");
+    emojiBox.textContent = transformed ? "🍿" : "🌽";
+    emojiBox.classList.toggle("active");
 
+    if (transformed) {
       for (let i = 0; i < 40; i++) {
         createPopcornGIF(emojiBox);
       }
-
-      btn.textContent = "COOKED!";
-      document.getElementById("againBtn").style.display = "inline-block";
     }
+  }
 
-    function reset() {
-      transformed = false;
-      document.getElementById("emojiBox").textContent = "🌽";
-      document.getElementById("emojiBox").classList.remove("active");
-      const btn = document.getElementById("cookBtn");
-      btn.textContent = "COOK";
-      btn.disabled = false;
-      document.getElementById("againBtn").style.display = "none";
-      document.getElementById("countdown").textContent = "";
-    }
+  function createPopcornGIF(origin) {
+    const gif = document.createElement("img");
+    gif.className = "popcorn-gif";
+    gif.src = "https://media0.giphy.com/media/daG6C0PH6vEU8/giphy.gif";
 
-    function createPopcornGIF(origin) {
-      const gif = document.createElement("img");
-      gif.className = "popcorn-gif";
-      gif.src = "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExNmlqc2VpOWh4eXhleW55ZGpudnhhcTRsdHBzMjQwMDkybGRoNW1kMSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/daG6C0PH6vEU8/giphy.gif";
+    const rect = origin.getBoundingClientRect();
+    gif.style.left = `${rect.left + rect.width / 2}px`;
+    gif.style.top = `${rect.top + rect.height / 2}px`;
 
-      const rect = origin.getBoundingClientRect();
-      gif.style.left = `${rect.left + rect.width / 2}px`;
-      gif.style.top = `${rect.top + rect.height / 2}px`;
+    const angle = Math.random() * 2 * Math.PI;
+    const distance = Math.random() * 800 + 100;
+    const x = Math.cos(angle) * distance;
+    const y = Math.sin(angle) * distance;
 
-      const angle = Math.random() * 2 * Math.PI;
-      const distance = Math.random() * 800 + 100;
-      const x = Math.cos(angle) * distance;
-      const y = Math.sin(angle) * distance;
-      const rotate = Math.floor(Math.random() * 360) + "deg";
+    const rotate = Math.floor(Math.random() * 360) + "deg";
 
-      gif.style.setProperty('--x', `${x}px`);
-      gif.style.setProperty('--y', `${y}px`);
-      gif.style.setProperty('--r', rotate);
+    gif.style.setProperty('--x', `${x}px`);
+    gif.style.setProperty('--y', `${y}px`);
+    gif.style.setProperty('--r', rotate);
 
-      document.body.appendChild(gif);
-      setTimeout(() => gif.remove(), 2000);
-    }
-  </script>
+    document.body.appendChild(gif);
+
+    setTimeout(() => gif.remove(), 2000);
+  }
+
+  function reset() {
+    document.getElementById("emojiBox").textContent = "🌽";
+    document.getElementById("emojiBox").classList.remove("active");
+    document.getElementById("cookBtn").disabled = false;
+    document.getElementById("cookBtn").textContent = "COOK";
+    document.getElementById("cookBtn").classList.remove("hidden");
+    document.getElementById("againBtn").classList.add("hidden");
+    document.getElementById("wish").value = "";
+    document.getElementById("wishOutput").innerText = "";
+    transformed = false;
+  }
+</script>
 
 </body>
 </html>
