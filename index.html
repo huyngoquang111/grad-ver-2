@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>COLLECT the corn!</title>
   <style>
-    /* ... (giữ nguyên toàn bộ phần CSS từ trước) ... */
+    /* ... (giữ nguyên toàn bộ CSS bạn đang dùng) ... */
   </style>
 </head>
 <body>
@@ -19,7 +19,7 @@
 
   <div class="main-content">
     <h1>COLLECT THE CORN</h1>
-    <div id="emojiBox"><img src="assets/images/corn.png" loading="lazy" alt="Corn"></div>
+    <div id="emojiBox"><img src="assets/images/corn.png" alt="Corn" loading="lazy"></div>
     <div class="progress-container"><div id="progressBar"></div></div>
     <p id="collectPrompt" style="display:none;">Leave a note to help me collect the crops</p>
     <button id="collectBtn" class="pixel-button" style="display:none;">COLLECT</button>
@@ -35,173 +35,173 @@
   <audio id="bgMusic" src="assets/music/praise-be-to-god-327557.mp3" preload="auto" loop></audio>
   <audio id="crowAudio" src="assets/music/crow effect.mp3" preload="metadata"></audio>
 
-<script>
-  // --- Background music toggle & auto-play ---
-  const bgMusic = document.getElementById('bgMusic');
-  const bgToggle = document.getElementById('bgToggleBtn');
-  let bgPlaying = false;
-  window.addEventListener('load', () => {
-    bgMusic.play().catch(()=>{});
-    bgPlaying = true;
-    bgToggle.textContent = '🔊';
-  });
-  bgToggle.addEventListener('click', e => {
-    e.stopPropagation();
-    if (bgPlaying) {
-      bgMusic.pause();
-      bgToggle.textContent = '🔇';
-    } else {
+  <script>
+    // --- Background music ---
+    const bgMusic = document.getElementById('bgMusic');
+    const bgToggle = document.getElementById('bgToggleBtn');
+    let bgPlaying = false;
+    window.addEventListener('load', () => {
       bgMusic.play().catch(()=>{});
+      bgPlaying = true;
       bgToggle.textContent = '🔊';
-    }
-    bgPlaying = !bgPlaying;
-  });
+    });
+    bgToggle.addEventListener('click', e => {
+      e.stopPropagation();
+      if (bgPlaying) {
+        bgMusic.pause();
+        bgToggle.textContent = '🔇';
+      } else {
+        bgMusic.play().catch(()=>{});
+        bgToggle.textContent = '🔊';
+      }
+      bgPlaying = !bgPlaying;
+    });
 
-  const isMobile = window.matchMedia('(max-width:768px)').matches;
+    const isMobile = window.matchMedia('(max-width:768px)').matches;
 
-  // --- Crow logic (desktop only) ---
-  let crowCount = 0;
-  function spawnCrows() {
-    crowCount = 0;
-    for (let i = 0; i < 5; i++) {
-      const crow = document.createElement('img');
-      crow.src = 'assets/images/ChatGPT Image Jul 23, 2025, 05_03_14 PM.png';
-      crow.className = 'crow';
-      crow.style.top  = `${Math.random()*80}%`;
-      crow.style.left = `${Math.random()*80}%`;
-      document.body.appendChild(crow);
+    // --- Crow logic (desktop only) ---
+    let crowCount = 0;
+    function spawnCrows() {
+      crowCount = 0;
+      for (let i = 0; i < 5; i++) {
+        const crow = document.createElement('img');
+        crow.src = 'assets/images/ChatGPT Image Jul 23, 2025, 05_03_14 PM.png';
+        crow.className = 'crow';
+        crow.style.top  = `${Math.random()*80}%`;
+        crow.style.left = `${Math.random()*80}%`;
+        document.body.appendChild(crow);
+      }
     }
-  }
-  if (!isMobile) {
-    spawnCrows();
-    document.body.addEventListener('click', e => {
-      if (e.target.classList.contains('crow')) {
-        const audio = document.getElementById('crowAudio');
-        audio.currentTime = 0; audio.play();
-        setTimeout(()=>audio.pause(), 4000);
-        e.target.remove();
-        crowCount++;
-        if (crowCount === 5) setTimeout(spawnCrows, 1000);
+    if (!isMobile) {
+      spawnCrows();
+      document.body.addEventListener('click', e => {
+        if (e.target.classList.contains('crow')) {
+          const audio = document.getElementById('crowAudio');
+          audio.currentTime = 0; audio.play();
+          setTimeout(()=>audio.pause(), 4000);
+          e.target.remove();
+          crowCount++;
+          if (crowCount === 5) setTimeout(spawnCrows, 1000);
+        }
+      });
+    }
+
+    // --- Collect & Cook logic ---
+    let collectCount = 0, maxCollect = 4;
+    const progressBar   = document.getElementById('progressBar');
+    const collectBtn    = document.getElementById('collectBtn');
+    const cookBtn       = document.getElementById('cookBtn');
+    const reloadBtn     = document.getElementById('reloadBtn');
+    const emojiBox      = document.getElementById('emojiBox');
+    const nameInput     = document.getElementById('nameInput');
+    const wishInput     = document.getElementById('wishInput');
+    const collectPrompt = document.getElementById('collectPrompt');
+    const thankyou      = document.getElementById('thankyou');
+
+    function updateCollectUI() {
+      const ready = nameInput.value.trim() && wishInput.value.trim();
+      collectPrompt.style.display = ready ? 'block' : 'none';
+      collectBtn.style.display    = ready ? 'inline-block' : 'none';
+    }
+    nameInput.addEventListener('input', updateCollectUI);
+    wishInput.addEventListener('input', updateCollectUI);
+
+    collectBtn.addEventListener('click', () => {
+      collectCount++;
+      progressBar.style.width = (collectCount / maxCollect * 100) + '%';
+      emojiBox.innerHTML = '';
+      for (let i = 0; i < collectCount; i++) {
+        const img = document.createElement('img');
+        img.src = 'assets/images/corn.png';
+        img.width = 50; img.height = 50; img.loading = 'lazy';
+        emojiBox.appendChild(img);
+      }
+      if (collectCount === maxCollect) {
+        collectPrompt.style.display = 'none';
+        collectBtn.style.display    = 'none';
+        startCookProcess();
       }
     });
-  }
 
-  // --- Collect & Cook logic ---
-  let collectCount = 0, maxCollect = 4;
-  const progressBar   = document.getElementById('progressBar');
-  const collectBtn    = document.getElementById('collectBtn');
-  const cookBtn       = document.getElementById('cookBtn');
-  const reloadBtn     = document.getElementById('reloadBtn');
-  const emojiBox      = document.getElementById('emojiBox');
-  const nameInput     = document.getElementById('nameInput');
-  const wishInput     = document.getElementById('wishInput');
-  const collectPrompt = document.getElementById('collectPrompt');
-  const thankyou      = document.getElementById('thankyou');
-
-  function updateCollectUI() {
-    const ready = nameInput.value.trim() && wishInput.value.trim();
-    collectPrompt.style.display = ready ? 'block' : 'none';
-    collectBtn.style.display    = ready ? 'inline-block' : 'none';
-  }
-  nameInput.addEventListener('input', updateCollectUI);
-  wishInput.addEventListener('input', updateCollectUI);
-
-  collectBtn.addEventListener('click', () => {
-    collectCount++;
-    progressBar.style.width = (collectCount / maxCollect * 100) + '%';
-    emojiBox.innerHTML = '';
-    for (let i = 0; i < collectCount; i++) {
-      const img = document.createElement('img');
-      img.src = 'assets/images/corn.png';
-      img.width = 50; img.height = 50; img.loading = 'lazy';
-      emojiBox.appendChild(img);
+    function startCookProcess() {
+      let t = 3;
+      cookBtn.style.display = 'inline-block';
+      cookBtn.disabled      = true;
+      cookBtn.textContent   = `COOK (${t})`;
+      const iv = setInterval(() => {
+        t--;
+        cookBtn.textContent = t > 0 ? `COOK (${t})` : 'COOKED!';
+        if (t < 0) {
+          clearInterval(iv);
+          transformCorn();
+        }
+      }, 1000);
     }
-    if (collectCount === maxCollect) {
-      collectPrompt.style.display = 'none';
-      collectBtn.style.display    = 'none';
-      startCookProcess();
-    }
-  });
 
-  function startCookProcess() {
-    let t = 3;
-    cookBtn.style.display = 'inline-block';
-    cookBtn.disabled      = true;
-    cookBtn.textContent   = `COOK (${t})`;
-    const iv = setInterval(() => {
-      t--;
-      cookBtn.textContent = t > 0 ? `COOK (${t})` : 'COOKED!';
-      if (t < 0) {
-        clearInterval(iv);
-        transformCorn();
+    function transformCorn() {
+      // Show the popcorn box
+      emojiBox.innerHTML = `<img src="assets/images/popcorn_transparent.png" width="120" height="120" loading="lazy" alt="Popcorn Box">`;
+      emojiBox.classList.add('active');
+
+      // Fire off kernels
+      const count = isMobile ? 50 : 200;
+      for (let i = 0; i < count; i++) {
+        createPopcornGIF(emojiBox);
       }
-    }, 1000);
-  }
 
-  function transformCorn() {
-    // Show popcorn box
-    emojiBox.innerHTML = `<img src="assets/images/popcorn_transparent.png" width="120" height="120" loading="lazy">`;
-    emojiBox.classList.add('active');
+      // Show reload button
+      reloadBtn.style.display = 'inline-block';
 
-    // Fire off corn kernels
-    const count = isMobile ? 50 : 200;
-    for (let i = 0; i < count; i++) {
-      createPopcornGIF(emojiBox);
-    }
-
-    // Show reload
-    reloadBtn.style.display = 'inline-block';
-
-    // --- NEW: Send name & wish to Formspree ---
-    fetch("https://formspree.io/f/mwpqlnln", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name:  nameInput.value.trim(),
-        wish:  wishInput.value.trim()
+      // ——— SEND TO FORMSPREE ———
+      fetch("https://formspree.io/f/mwpqlnln", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: nameInput.value.trim(),
+          wish: wishInput.value.trim()
+        })
       })
-    })
-    .then(res => {
-      if (res.ok) {
-        thankyou.style.display = 'block';
-      }
-    })
-    .catch(err => console.error("Formspree error:", err));
-  }
-
-  function createPopcornGIF(origin) {
-    const gif = document.createElement('img');
-    gif.className = 'popcorn-gif';
-    gif.src       = 'assets/images/popcorn tiny.png';
-    const rect    = origin.getBoundingClientRect();
-    gif.style.left = `${rect.left + rect.width/2}px`;
-    gif.style.top  = `${rect.top  + rect.height/2}px`;
-    const x       = (Math.random()-0.5)*2*window.innerWidth;
-    const y       = (Math.random()-0.5)*2*window.innerHeight;
-    const r       = `${Math.random()*360}deg`;
-    gif.style.setProperty('--x', `${x}px`);
-    gif.style.setProperty('--y', `${y}px`);
-    gif.style.setProperty('--r',  r);
-    document.body.appendChild(gif);
-    setTimeout(() => gif.remove(), 2000);
-  }
-
-  // Countdown
-  function updateCountdown() {
-    const target = new Date("2025-09-14T09:00:00+07:00"),
-          now    = new Date(),
-          diff   = target - now;
-    if (diff > 0) {
-      const h = String(Math.floor(diff/3600000)).padStart(2,'0'),
-            m = String(Math.floor((diff/60000)%60)).padStart(2,'0'),
-            s = String(Math.floor((diff/1000)%60)).padStart(2,'0');
-      document.getElementById('countdown').textContent = `${h}:${m}:${s}`;
-    } else {
-      document.getElementById('countdown').textContent = "It's harvest time!";
+      .then(res => {
+        if (res.ok) {
+          thankyou.style.display = 'block';
+        }
+      })
+      .catch(err => console.error("Formspree error:", err));
     }
-  }
-  setInterval(updateCountdown,1000);
-  updateCountdown();
-</script>
+
+    function createPopcornGIF(origin) {
+      const gif = document.createElement('img');
+      gif.className = 'popcorn-gif';
+      gif.src       = 'assets/images/popcorn tiny.png';
+      const rect    = origin.getBoundingClientRect();
+      gif.style.left = `${rect.left + rect.width/2}px`;
+      gif.style.top  = `${rect.top  + rect.height/2}px`;
+      const x       = (Math.random()-0.5)*2*window.innerWidth;
+      const y       = (Math.random()-0.5)*2*window.innerHeight;
+      const r       = `${Math.random()*360}deg`;
+      gif.style.setProperty('--x', `${x}px`);
+      gif.style.setProperty('--y', `${y}px`);
+      gif.style.setProperty('--r',  r);
+      document.body.appendChild(gif);
+      setTimeout(() => gif.remove(), 2000);
+    }
+
+    // Countdown
+    function updateCountdown() {
+      const target = new Date("2025-09-14T09:00:00+07:00"),
+            now    = new Date(),
+            diff   = target - now;
+      if (diff > 0) {
+        const h = String(Math.floor(diff/3600000)).padStart(2,'0'),
+              m = String(Math.floor((diff/60000)%60)).padStart(2,'0'),
+              s = String(Math.floor((diff/1000)%60)).padStart(2,'0');
+        document.getElementById('countdown').textContent = `${h}:${m}:${s}`;
+      } else {
+        document.getElementById('countdown').textContent = "It's harvest time!";
+      }
+    }
+    setInterval(updateCountdown,1000);
+    updateCountdown();
+  </script>
 </body>
 </html>
