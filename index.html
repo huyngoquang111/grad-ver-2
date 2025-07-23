@@ -7,7 +7,7 @@
   <style>
     body {
       font-family: 'Press Start 2P', cursive;
-      background-image: url('assets/images/ChatGPT Image Jul 23, 2025, 02_33_11 PM.png'); /* Replace with actual background URL */
+      background-image: url('assets/images/ChatGPT Image Jul 23, 2025, 02_33_11 PM.png');
       background-size: cover;
       background-position: center;
       margin: 0;
@@ -60,14 +60,18 @@
       width: 300px;
     }
 
-    textarea {
+    textarea, input {
       width: 100%;
-      height: 80px;
       font-family: 'Press Start 2P', cursive;
       font-size: 10px;
       padding: 8px;
       background: #fffde7;
       border: 2px solid #000;
+      margin-bottom: 8px;
+    }
+
+    textarea {
+      height: 80px;
       resize: none;
     }
 
@@ -115,6 +119,7 @@
   <button id="againBtn" class="pixel-button" style="display:none;" onclick="reset()">AGAIN</button>
 
   <div class="frame">
+    <input type="text" id="nameInput" placeholder="Your name (optional)">
     <textarea id="wishInput" placeholder="Write your wish..."></textarea>
     <p id="thankyou">THANK YOU SO MUCHHH!</p>
   </div>
@@ -141,6 +146,7 @@
     function transform() {
       const emojiBox = document.getElementById("emojiBox");
       const wishText = document.getElementById("wishInput").value;
+      const nameText = document.getElementById("nameInput").value;
       const thankyou = document.getElementById("thankyou");
 
       transformed = true;
@@ -152,10 +158,16 @@
       }
 
       if (wishText.trim() !== "") {
-        fetch("https://script.google.com/macros/s/AKfycbzVOQZpqVRr98mjT-woVl0mpszp1jdIHbdJAppkwnQftgKxuEFb9J8vv7n07pcpLw0W/exec", {
+        fetch("https://formspree.io/f/mwpqlnln", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ wish: wishText })
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          },
+          body: JSON.stringify({
+            name: nameText,
+            wish: wishText
+          })
         })
         .then(res => res.json())
         .then(data => {
@@ -176,6 +188,7 @@
       document.getElementById("againBtn").style.display = "none";
       document.getElementById("thankyou").style.display = "none";
       document.getElementById("wishInput").value = "";
+      document.getElementById("nameInput").value = "";
       transformed = false;
     }
 
