@@ -23,17 +23,18 @@
     }
 
     .info-box {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      width: 280px;
+      width: 300px;
       background: rgba(0, 0, 0, 0.6);
-      padding: 14px;
+      padding: 20px;
       border: 3px solid #fff176;
       border-radius: 10px;
-      font-size: 8px;
-      line-height: 1.8;
-      z-index: 10;
+      font-size: 14px;
+      line-height: 1.6;
+      margin-right: 40px;
+    }
+
+    .info-box p {
+      margin: 8px 0;
     }
 
     .main-content {
@@ -44,13 +45,12 @@
     }
 
     h1 {
-      font-size: 18px;
+      font-size: 28px;
       animation: blink 1s infinite;
-      margin-bottom: 12px;
+      margin-bottom: 16px;
     }
 
     #emojiBox {
-      font-size: 120px;
       transition: all 0.5s ease;
     }
 
@@ -60,8 +60,8 @@
 
     .pixel-button {
       font-family: 'Press Start 2P', cursive;
-      font-size: 10px;
-      padding: 10px 16px;
+      font-size: 14px;
+      padding: 12px 20px;
       background: #ffcc00;
       color: black;
       border: 4px solid black;
@@ -77,9 +77,9 @@
     .frame {
       background: rgba(0, 0, 0, 0.6);
       border: 3px dashed #fff176;
-      padding: 14px;
-      margin-top: 14px;
-      width: 260px;
+      padding: 20px;
+      margin-top: 20px;
+      width: 300px;
       border-radius: 10px;
       box-shadow: 0 0 10px #00000088;
       display: flex;
@@ -90,26 +90,26 @@
     textarea, input {
       width: 100%;
       font-family: 'Press Start 2P', cursive;
-      font-size: 9px;
-      padding: 6px;
+      font-size: 14px;
+      padding: 8px;
       background: #fffde7;
       border: 2px solid #000;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
       box-sizing: border-box;
     }
 
     textarea {
-      height: 70px;
+      height: 80px;
       resize: none;
     }
 
     .popcorn-gif {
       position: absolute;
-      width: 200px;
-      height: 200px;
-      animation: pop 2s ease-out forwards;
       pointer-events: none;
       z-index: 0;
+      width: 30px;
+      height: 30px;
+      animation: pop 2s ease-out forwards;
     }
 
     @keyframes pop {
@@ -130,9 +130,9 @@
 
     #thankyou {
       font-family: 'Press Start 2P', cursive;
-      font-size: 9px;
+      font-size: 14px;
       color: #ff4444;
-      margin-top: 10px;
+      margin-top: 12px;
       animation: blink 1s infinite;
       display: none;
       text-align: center;
@@ -156,7 +156,9 @@
 
   <div class="main-content">
     <h1>POP THE CORN!</h1>
-    <div id="emojiBox">🌽</div>
+    <div id="emojiBox">
+      <img src="assets/images/corn.png" style="width:120px;height:120px;">
+    </div>
 
     <button id="cookBtn" class="pixel-button" onclick="startCountdown()" disabled>COOK</button>
     <button id="againBtn" class="pixel-button" style="display:none;" onclick="reset()">AGAIN</button>
@@ -174,7 +176,6 @@
       const target = new Date("2025-09-14T09:00:00+07:00");
       const now = new Date();
       const diff = target - now;
-
       if (diff > 0) {
         const hours = String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, '0');
         const minutes = String(Math.floor((diff / (1000 * 60)) % 60)).padStart(2, '0');
@@ -184,19 +185,20 @@
         document.getElementById("countdown").textContent = "It's harvest time!";
       }
     }
-
     setInterval(updateCountdown, 1000);
     updateCountdown();
 
-    // Bắt buộc điền lời chúc mới enable nút cook
-    document.getElementById("wishInput").addEventListener("input", function() {
-      const wish = this.value.trim();
-      document.getElementById("cookBtn").disabled = wish === "" || crowCount < 10;
-    });
-
-    // Biến để theo dõi trạng thái click quạ
+    // Enable nút COOK khi đủ điều kiện
     let crowCount = 0;
+    document.getElementById("wishInput").addEventListener("input", checkCookButton);
+    function checkCookButton() {
+      const wish = document.getElementById("wishInput").value.trim();
+      document.getElementById("cookBtn").disabled = wish === "" || crowCount < 10;
+    }
+
+    // Spawn 10 quạ và respawn khi click đủ 10
     function spawnCrows() {
+      crowCount = 0;
       for (let i = 0; i < 10; i++) {
         const crow = document.createElement("img");
         crow.src = "assets/images/ChatGPT Image Jul 23, 2025, 05_03_14 PM.png";
@@ -206,8 +208,9 @@
         crow.onclick = () => {
           crow.remove();
           crowCount++;
+          checkCookButton();
           if (crowCount >= 10 && document.getElementById("wishInput").value.trim() !== "") {
-            document.getElementById("cookBtn").disabled = false;
+            setTimeout(spawnCrows, 1000);
           }
         };
         document.body.appendChild(crow);
@@ -215,91 +218,88 @@
     }
     spawnCrows();
 
+    // COOK countdown
     function startCountdown() {
       const btn = document.getElementById("cookBtn");
       btn.disabled = true;
       let count = 3;
       btn.textContent = "Loading...";
-      
-      const countdown = setInterval(() => {
+      const interval = setInterval(() => {
         if (count >= 0) {
           btn.textContent = count;
           count--;
         } else {
-          clearInterval(countdown);
+          clearInterval(interval);
           btn.textContent = "COOKED!";
-          transform();
+          transformCorn();
         }
       }, 1000);
     }
 
-    function transform() {
+    // Thay bắp thành hộp và bắn hạt
+    function transformCorn() {
       const emojiBox = document.getElementById("emojiBox");
-      const wishText = document.getElementById("wishInput").value;
-      const nameText = document.getElementById("nameInput").value;
+      const wishText = document.getElementById("wishInput").value.trim();
+      const nameText = document.getElementById("nameInput").value.trim();
       const thankyou = document.getElementById("thankyou");
 
-      emojiBox.textContent = "🍿";
+      emojiBox.innerHTML = `<img src="assets/images/popcorn_transparent.png" style="width:120px;height:120px;">`;
       emojiBox.classList.add("active");
 
       for (let i = 0; i < 40; i++) {
         createPopcornGIF(emojiBox);
       }
 
-      if (wishText.trim() !== "") {
+      if (wishText !== "") {
         fetch("https://formspree.io/f/mwpqlnln", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             "Accept": "application/json"
           },
-          body: JSON.stringify({
-            name: nameText,
-            wish: wishText
-          })
+          body: JSON.stringify({ name: nameText, wish: wishText })
         })
         .then(res => res.json())
-        .then(data => {
-          console.log("Saved:", data);
-          thankyou.style.display = "block";
-        })
-        .catch(err => console.error("Error:", err));
+        .then(() => thankyou.style.display = "block")
+        .catch(err => console.error(err));
       }
 
       document.getElementById("againBtn").style.display = "inline-block";
     }
 
+    // Reset về trạng thái ban đầu
     function reset() {
-      document.getElementById("emojiBox").textContent = "🌽";
-      document.getElementById("emojiBox").classList.remove("active");
+      const emojiBox = document.getElementById("emojiBox");
+      emojiBox.innerHTML = `<img src="assets/images/corn.png" style="width:120px;height:120px;">`;
+      emojiBox.classList.remove("active");
       document.getElementById("cookBtn").textContent = "COOK";
       document.getElementById("cookBtn").disabled = true;
       document.getElementById("againBtn").style.display = "none";
       document.getElementById("thankyou").style.display = "none";
       document.getElementById("wishInput").value = "";
       document.getElementById("nameInput").value = "";
-      crowCount = 0;
       spawnCrows();
     }
 
+    // Tạo hạt bỏng nổ ra
     function createPopcornGIF(origin) {
       const gif = document.createElement("img");
       gif.className = "popcorn-gif";
-      gif.src = "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExNmlqc2VpOWh4eXhleW55ZGpudnhhcTRsdHBzMjQwMDkybGRoNW1kMSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/daG6C0PH6vEU8/giphy.gif";
+      gif.src = "assets/images/popcorn tiny.png";
 
       const rect = origin.getBoundingClientRect();
-      gif.style.left = `${rect.left + rect.width / 2}px`;
-      gif.style.top = `${rect.top + rect.height / 2}px`;
+      gif.style.left = `${rect.left + rect.width/2}px`;
+      gif.style.top = `${rect.top + rect.height/2}px`;
 
       const angle = Math.random() * 2 * Math.PI;
-      const distance = Math.random() * 800 + 100;
+      const distance = Math.random() * 600 + 100;
       const x = Math.cos(angle) * distance;
       const y = Math.sin(angle) * distance;
-      const rotate = Math.floor(Math.random() * 360) + "deg";
+      const r = `${Math.random() * 360}deg`;
 
       gif.style.setProperty('--x', `${x}px`);
       gif.style.setProperty('--y', `${y}px`);
-      gif.style.setProperty('--r', rotate);
+      gif.style.setProperty('--r', r);
 
       document.body.appendChild(gif);
       setTimeout(() => gif.remove(), 2000);
