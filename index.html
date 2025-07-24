@@ -230,12 +230,37 @@
     font-size: 20px;
     padding: 30px;
   }
+        #score-box {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 12px 20px;
+  border: 2px solid #fff176;
+  border-radius: 8px;
+  font-size: 20px;
+  color: #ffeb3b;
+  font-family: 'ArcadeClassic', monospace;
+  z-index: 1001;
+  text-shadow: 1px 1px 2px #000;
+}
+#score-box.jackpot {
+  color: #00ff00;
+  font-size: 28px;
+  animation: jackpot-blink 0.5s infinite;
+  border-color: #00ff00;
+}
+
+@keyframes jackpot-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
     }
   </style>
 </head>
 <body>
   <button id="bgToggleBtn">🔊</button>
-
+  <div id="score-box">SCORE: 0</div>
   <div class="info-box">
     <p>🌽 <strong>Farm owner:</strong> Ngô Quang Huy</p>
     <p>⏳ <strong>Harvest time:</strong> <span id="countdown">Loading...</span></p>
@@ -284,6 +309,15 @@
     const isMobile = window.matchMedia('(max-width:768px)').matches;
 
     let crowCount = 0;
+    let score = 0;
+const scoreBox = document.getElementById('score-box');
+
+function updateScore() {
+  scoreBox.textContent = score >= 2340 ? '🎉 JACKPOT! 🎉' : `SCORE: ${score}`;
+  if (score >= 2340) {
+    scoreBox.classList.add('jackpot');
+  }
+}
     function spawnCrows() {
       crowCount = 0;
       for (let i = 0; i < 5; i++) {
@@ -304,6 +338,8 @@
           audio.play();
           setTimeout(() => audio.pause(), 4000);
           e.target.remove();
+          score += 10;
+updateScore();
           crowCount++;
           if (crowCount === 5) setTimeout(spawnCrows, 1000);
         }
