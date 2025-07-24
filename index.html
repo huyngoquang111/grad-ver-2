@@ -339,10 +339,10 @@ function updateScore() {
           audio.play();
           setTimeout(() => audio.pause(), 4000);
           e.target.remove();
-          score += 10;
+          score += 20;
 updateScore();
           crowCount++;
-          if (crowCount === 20) setTimeout(spawnCrows, 1000);
+          if (crowCount === 10) setTimeout(spawnCrows, 1000);
         }
       });
     }
@@ -410,7 +410,7 @@ updateScore();
     }
 
     function transformCorn() {
-      emojiBox.innerHTML = `<img src="assets/images/popcorn_transparent.png" width="120" height="120">`;
+      emojiBox.innerHTML = `<img src="assets/images/popcorn_transparent.png" width="240" height="240">`;
       emojiBox.classList.add('active');
       const count = isMobile ? 50 : 200;
       for (let i = 0; i < count; i++) createPopcornGIF(emojiBox);
