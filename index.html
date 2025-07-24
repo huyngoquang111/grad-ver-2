@@ -230,19 +230,20 @@
     font-size: 20px;
     padding: 30px;
   }
-        #score-box {
-  position: absolute;
+       #score-box {
+  position: fixed;
   top: 20px;
   left: 20px;
-  background: rgba(0, 0, 0, 0.5);
-  padding: 12px 20px;
+  background: rgba(0, 0, 0, 0.7);  /* tăng độ đậm */
+  padding: 12px 24px;
   border: 2px solid #fff176;
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 20px;
-  color: #ffeb3b;
+  color: #fff176;
   font-family: 'ArcadeClassic', monospace;
-  z-index: 1001;
+  z-index: 9999; /* luôn nằm trên mọi thứ */
   text-shadow: 1px 1px 2px #000;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
 }
 #score-box.jackpot {
   color: #00ff00;
@@ -320,7 +321,7 @@ function updateScore() {
 }
     function spawnCrows() {
       crowCount = 0;
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < 10; i++) {
         const c = document.createElement('img');
         c.src = 'assets/images/ChatGPT Image Jul 23, 2025, 05_03_14 PM.png';
         c.className = 'crow';
@@ -341,7 +342,7 @@ function updateScore() {
           score += 10;
 updateScore();
           crowCount++;
-          if (crowCount === 5) setTimeout(spawnCrows, 1000);
+          if (crowCount === 20) setTimeout(spawnCrows, 1000);
         }
       });
     }
