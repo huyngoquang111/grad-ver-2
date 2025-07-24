@@ -160,6 +160,9 @@
       font-size: 16px;
       border-radius: 4px;
       z-index: 999;
+      display: flex;
+  align-items: center;
+  gap: 6px;
     }
 
     @media (min-width: 769px) {
@@ -260,7 +263,10 @@
   </style>
 </head>
 <body>
-  <button id="bgToggleBtn">🔊</button>
+  <button id="bgToggleBtn">
+  <span>🔊</span>
+  <span>Turn on/off bg music</span>
+</button>
   <div id="score-box">SCORE: 0</div>
   <div class="info-box">
     <p>🌽 <strong>Farm owner:</strong> Ngô Quang Huy</p>
