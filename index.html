@@ -49,9 +49,15 @@
     }
 
     .info-box p {
-      font-size: 14px;
-      line-height: 1.6;
-      margin: 8px 0;
+      width: 100%;
+  max-width: 640px;
+  padding: 24px 32px;
+  font-size: 18px;
+  background: rgba(0, 0, 0, 0.7);
+  border: 2px solid #fff176;
+  border-radius: 14px;
+  line-height: 1.8;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
     }
 
     #emojiBox {
@@ -218,6 +224,12 @@
         cursor: pointer;
         z-index: 1000;
       }
+      @media (min-width: 769px) {
+  .info-box {
+    max-width: 720px;
+    font-size: 20px;
+    padding: 30px;
+  }
     }
   </style>
 </head>
