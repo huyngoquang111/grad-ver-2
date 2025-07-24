@@ -299,16 +299,16 @@
     window.addEventListener('load', () => {
       bgMusic.play().catch(() => {});
       bgPlaying = true;
-      bgToggle.textContent = '🔊';
+      bgToggle.querySelector('span:first-child').textContent = '🔊';
     });
     bgToggle.addEventListener('click', e => {
       e.stopPropagation();
       if (bgPlaying) {
         bgMusic.pause();
-        bgToggle.textContent = '🔇';
+        bgToggle.querySelector('span:first-child').textContent = '🔇';
       } else {
         bgMusic.play().catch(() => {});
-        bgToggle.textContent = '🔊';
+        bgToggle.querySelector('span:first-child').textContent = '🔊';
       }
       bgPlaying = !bgPlaying;
     });
