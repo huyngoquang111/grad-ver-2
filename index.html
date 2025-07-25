@@ -259,6 +259,22 @@
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
 }
+.site-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.15);
+  color: #000;
+  font-size: 13px;
+  padding: 6px 12px;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  backdrop-filter: blur(4px);
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  z-index: 10000;
+}
     }
   </style>
 </head>
@@ -468,5 +484,9 @@ updateScore();
     setInterval(updateCountdown, 1000);
     updateCountdown();
   </script>
+  <footer class="site-footer">
+  © 2025. Ngô Quang Huy. Mọi phản hồi vui lòng liên hệ: dontmindthefailure@gmail.com
+</footer>
+
 </body>
 </html>
